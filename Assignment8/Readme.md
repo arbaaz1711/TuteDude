@@ -46,6 +46,9 @@ ToDoWithMongoose/
 - MongoDB Atlas account or local MongoDB installation
 - npm (comes with Node.js)
 
+### Deployment
+This application is deployed on [Render.com](https://render.com). You can access the live application at https://todo-app-with-mongodb.onrender.com
+
 ### Steps
 
 1. **Clone or navigate to the project directory**
@@ -59,13 +62,14 @@ ToDoWithMongoose/
    ```
 
 3. **Environment Configuration**
-   - The MongoDB connection string is currently hardcoded in `config/db.js`
-   - For production, create a `.env` file and use environment variables:
+   - Create a `.env` file in the root directory with the following variables:
    ```
-   NODE_ENV=production
+   NODE_ENV=development
    PORT=8000
    MONGODB_URI=your_mongodb_connection_string
    ```
+   - For production deployment on Render.com, add these environment variables in your Render dashboard
+   - Never commit the `.env` file to version control
 
 4. **Start the application**
    ```bash
