@@ -35,7 +35,7 @@ app.use('/api/todos', todoRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Todo App with Mongoose' });
+  res.render('index', { title: 'Todo App' });
 });
 
 // API info route
