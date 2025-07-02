@@ -55,6 +55,8 @@ A secure web application with user authentication, featuring login, signup, and 
 
 6. **Access the application**
    Open your browser and go to `http://localhost:8000`
+   
+   **Deployed Application**: [https://tutedude-gwpj.onrender.com](https://tutedude-gwpj.onrender.com)
 
 ## Project Structure
 
