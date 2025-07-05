@@ -68,6 +68,42 @@
             border-color: #667eea;
         }
 
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle img {
+            width: 16px;
+            height: 16px;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .password-toggle:hover img {
+            opacity: 0.8;
+        }
+
+        .password-container input {
+            padding-right: 40px;
+        }
+
         .btn {
             width: 100%;
             padding: 0.75rem;
@@ -131,7 +167,12 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <img src="/images/eye-open.png" alt="eye_open" />
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn">Sign In</button>
@@ -141,5 +182,20 @@
             <p>Don't have an account? <a href="/signup">Sign up</a></p>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.password-toggle img');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.src = '/images/close_eye.png';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.src = '/images/eye-open.png';
+            }
+        }
+    </script>
 </body>
 </html>
