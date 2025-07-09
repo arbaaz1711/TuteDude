@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const User = require("./models/User");
 const MongoStore = require("connect-mongo");
+const http = require("http");
 require("dotenv").config();
 
 const app = express();
@@ -24,7 +25,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI, // from your .env or Render
+      mongoUrl: process.env.MONGODB_URI,
       collectionName: "sessions",
     }),
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
@@ -39,6 +40,11 @@ const requireAuth = (req, res, next) => {
     res.redirect("/login");
   }
 };
+
+// Health check route for Render
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 // Routes
 app.get("/", (req, res) => {
@@ -56,21 +62,18 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user by email
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.render("login", { error: "Invalid email or password" });
     }
 
-    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return res.render("login", { error: "Invalid email or password" });
     }
 
-    // Set session
     req.session.userId = user._id;
     res.redirect("/dashboard");
   } catch (error) {
@@ -90,7 +93,6 @@ app.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validate password requirements
     const passwordErrors = [];
     if (password.length < 6) {
       passwordErrors.push("Password must be at least 6 characters long");
@@ -115,7 +117,6 @@ app.post("/signup", async (req, res) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render("signup", {
@@ -123,11 +124,9 @@ app.post("/signup", async (req, res) => {
       });
     }
 
-    // Hash password
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create new user
     const user = new User({
       name,
       email,
@@ -135,13 +134,10 @@ app.post("/signup", async (req, res) => {
     });
 
     await user.save();
-
-    // Redirect to login
     res.redirect("/login");
   } catch (error) {
     console.error("Signup error:", error);
 
-    // Handle Mongoose validation errors
     if (error.name === "ValidationError") {
       const errorMessages = Object.values(error.errors).map(
         (err) => err.message
@@ -172,7 +168,14 @@ app.get("/logout", (req, res) => {
   });
 });
 
+// Create server with custom timeouts
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+// Set timeouts (in ms)
+server.keepAliveTimeout = 120000; // 2 minutes
+server.headersTimeout = 130000; // Must be > keepAliveTimeout
+
+server.listen(PORT, () => {
   console.log(`App is listening on port: ${PORT}`);
 });
