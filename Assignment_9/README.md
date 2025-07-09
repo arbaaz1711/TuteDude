@@ -23,7 +23,7 @@ A secure web application with user authentication, featuring login, signup, and 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/arbaaz1711/TuteDude.git>
    cd Assignment_9
    ```
 
@@ -56,7 +56,7 @@ A secure web application with user authentication, featuring login, signup, and 
 6. **Access the application**
    Open your browser and go to `http://localhost:8000`
    
-   **Deployed Application**: [https://tutedude-gwpj.onrender.com](https://tutedude-gwpj.onrender.com)
+   **Deployed Application**: [https://secrets-app-7wax.onrender.com/login](https://secrets-app-7wax.onrender.com/login)
 
 ## Project Structure
 
