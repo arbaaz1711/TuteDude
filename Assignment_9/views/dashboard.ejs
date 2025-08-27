@@ -156,6 +156,52 @@
             margin-bottom: 1rem;
             color: #667eea;
         }
+        
+        .secret-form {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .secret-form input[type="text"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e3ff;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .secret-form button[type="submit"] {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .secrets-list {
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .secrets-list li {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            list-style: none;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        
     </style>
 </head>
 <body>
@@ -186,16 +232,35 @@
         </div>
 
         <div class="features">
-            <div class="feature-card">
-                <div class="icon"><img src="/images/locked.png" alt="Lock Key" ></div>
-                <h3>Secure Authentication</h3>
-                <p>Your account is protected with encrypted passwords and secure session management.</p>
-            </div>
             
             <div class="feature-card">
                 <div class="icon"><img src="/images/secure.png" alt="Lock Key"></div>
                 <h3>Protected Content</h3>
                 <p>This dashboard is only accessible to authenticated users with valid credentials.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon"><img src="/images/locked.png" alt="Lock Key"></div>
+                <h3>Store a Secret</h3>
+                <p>Save a personal note securely to your account.</p>
+                <form class="secret-form" method="POST" action="/secrets">
+                    <input type="text" name="secret" placeholder="Enter your secret..." required>
+                    <button type="submit">Save</button>
+                </form>
+                <% if (typeof secrets !== 'undefined' && secrets.length) { %>
+                    <ul class="secrets-list">
+                        <% secrets.forEach(function(item){ %>
+                            <li>
+                                <span><%= item.content %></span>
+                                <form method="POST" action="/secrets/<%= item._id %>/delete" style="display:inline; float:right;">
+                                    <button type="submit" class="delete-btn">
+                                        <img src="/images/delete.png" alt="Delete" width="16" height="16">
+                                    </button>
+                                </form>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } %>
             </div>
             
             <div class="feature-card">
