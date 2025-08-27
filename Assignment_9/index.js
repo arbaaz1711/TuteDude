@@ -3,6 +3,7 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const connectDB = require("./config/db");
 const User = require("./models/User");
+const Secret = require("./models/Secret");
 const MongoStore = require("connect-mongo");
 const http = require("http");
 require("dotenv").config();
@@ -152,10 +153,45 @@ app.post("/signup", async (req, res) => {
 app.get("/dashboard", requireAuth, async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
-    res.render("dashboard", { user });
+    const secrets = await Secret.find({ user: req.session.userId }).sort({ createdAt: -1 });
+    res.render("dashboard", { user, secrets });
   } catch (error) {
     console.error("Dashboard error:", error);
     res.redirect("/login");
+  }
+});
+
+app.post("/secrets", requireAuth, async (req, res) => {
+  try {
+    const { secret } = req.body;
+    if (!secret || !secret.trim()) {
+      return res.redirect("/dashboard");
+    }
+
+    await Secret.create({
+      user: req.session.userId,
+      content: secret.trim()
+    });
+
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("Save secret error:", error);
+    res.redirect("/dashboard");
+  }
+});
+
+app.post("/secrets/:id/delete", requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.redirect("/dashboard");
+    }
+
+    await Secret.deleteOne({ _id: id, user: req.session.userId });
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("Delete secret error:", error);
+    res.redirect("/dashboard");
   }
 });
 
